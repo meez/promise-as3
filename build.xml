@@ -1,0 +1,50 @@
+<project name="promise-as3" default="all" basedir=".">
+
+<description>
+AS3 Promise Library
+</description>
+
+<property name="build.root" location="build"/>
+<property name="build.package" location="${build.root}/package"/>
+
+<!-- Source -->
+<property name="src.root" location="src"/>
+
+<!-- Global targets -->
+<target name="all" depends="package"/>
+
+<!-- Init -->
+<target name="init">
+
+    <tstamp>
+        <format property="build.time" pattern="yyyy/MM/dd hh:mm"/>
+    </tstamp>
+
+</target>
+
+<!-- Clean -->
+<target name="clean"
+        description="Remove build files">
+    <delete dir="${build.root}"/>
+</target>
+
+<!-- Third Party Libraries -->
+<target name="dependencies">
+
+    <path id="src.path">
+        <pathelement location='${src.root}/as3'/>
+    </path>
+
+</target>
+
+<target name="compile-init" depends="init,dependencies"/>
+
+<target name="package" depends="compile-init">
+
+    <zip destfile="${build.package}/promise-as3.zip">
+	<fileset dir="${src.root}"/>
+    </zip>
+
+</target>
+
+</project>
