@@ -1,10 +1,16 @@
-<project name="promise-as3" default="all" basedir=".">
+<project name="promises-as3-0.9.0" default="all" basedir=".">
 
 <description>
 AS3 Promise Library
 </description>
 
-<property name="build.root" location="build"/>
+<!-- Override to avoid conflict -->
+<property name="build.root" location="out"/>
+
+<property name="support.home" location=".."/>
+<import file="${support.home}/ant/air.xml"/>
+<property file="${support.home}/build.properties"/>
+
 <property name="build.package" location="${build.root}/package"/>
 
 <!-- Source -->
@@ -23,16 +29,19 @@ AS3 Promise Library
 </target>
 
 <!-- Clean -->
-<target name="clean"
-        description="Remove build files">
+<target name="clean" description="Remove build files">
     <delete dir="${build.root}"/>
 </target>
 
-<!-- Third Party Libraries -->
+<!-- Dependencies to build -->
 <target name="dependencies">
 
     <path id="src.path">
-        <pathelement location='${src.root}/as3'/>
+        <path id="src.path">
+        <pathelement location='${src.root}/com/codecatalyst/promise/Deferred.as'/>
+        <pathelement location='${src.root}/com/codecatalyst/promise/Promise.as'/>
+        <pathelement location='${src.root}/com/codecatalyst/promise/CancellationError.as'/>
+    </path>
     </path>
 
 </target>
@@ -41,9 +50,17 @@ AS3 Promise Library
 
 <target name="package" depends="compile-init">
 
-    <zip destfile="${build.package}/promise-as3.zip">
-	<fileset dir="${src.root}"/>
-    </zip>
+    <echo message="Packaging swc to ${build.package}"/>
+
+    <compc
+            pathRef="src.path"
+            configxml="resources/lib.xml"
+            debug="false"
+            sdkConfig="air"
+            sdkPath="${air.sdk.home}"
+            output="${build.package}/${ant.project.name}.swc">
+        <arg value='-sp=${src.root}'/>
+    </compc>
 
 </target>
 
